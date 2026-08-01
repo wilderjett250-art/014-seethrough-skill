@@ -29,6 +29,9 @@ jobs:
         run: npm run build:win
 
       - name: Package ready-to-run ZIP
+        shell: pwsh
+        env:
+          RELEASE_VERSION: ${{ github.ref_name }}
         run: npm run package:release
 
       - name: Publish GitHub Release

@@ -1,10 +1,19 @@
+param(
+    [string]$VersionOverride = $env:RELEASE_VERSION
+)
+
 $ErrorActionPreference = "Stop"
 
 $ProjectRoot = Split-Path -Parent $MyInvocation.MyCommand.Path
 $PackageJsonPath = Join-Path $ProjectRoot "package.json"
 $PackageConfig = Get-Content -LiteralPath $PackageJsonPath -Raw -Encoding utf8 | ConvertFrom-Json
-$Version = [string]$PackageConfig.version
-$ExePath = Join-Path $ProjectRoot "release\seethrough-skill-$Version-x64.exe"
+$PackageVersion = [string]$PackageConfig.version
+$Version = if ([string]::IsNullOrWhiteSpace($VersionOverride)) {
+    $PackageVersion
+} else {
+    $VersionOverride.Trim() -replace '^v', ''
+}
+$ExePath = Join-Path $ProjectRoot "release\seethrough-skill-$PackageVersion-x64.exe"
 
 if (-not (Test-Path -LiteralPath $ExePath)) {
     throw "Final Windows EXE not found: $ExePath. Run npm run build:win first."

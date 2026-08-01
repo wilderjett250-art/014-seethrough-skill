@@ -1,0 +1,43 @@
+name: Build Windows Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build portable Windows EXE
+        run: npm run build:win
+
+      - name: Package ready-to-run ZIP
+        run: npm run package:release
+
+      - name: Publish GitHub Release
+        shell: pwsh
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          $asset = Get-ChildItem -LiteralPath dist -Filter "seethrough-skill-windows-x64-*.zip" | Select-Object -First 1
+          if (-not $asset) {
+            throw "Release ZIP was not created."
+          }
+          gh release create "${{ github.ref_name }}" $asset.FullName --title "SeeThrough Skill ${{ github.ref_name }}" --generate-notes

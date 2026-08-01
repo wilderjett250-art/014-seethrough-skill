@@ -1,0 +1,51 @@
+{
+  "name": "seethrough-skill",
+  "version": "0.1.0",
+  "productName": "SeeThrough Skill",
+  "type": "module",
+  "main": "electron/main.mjs",
+  "description": "Inspect local Codex and Claude Skills plus MCP configuration from a read-only browser dashboard.",
+  "scripts": {
+    "start": "node serve-local.mjs",
+    "serve": "node serve-local.mjs --no-open",
+    "open": "node serve-local.mjs",
+    "desktop": "electron .",
+    "build:win": "electron-builder --win portable",
+    "scan": "node scan-local.mjs",
+    "scan:json": "node scan-local.mjs --json",
+    "explain": "node scripts/explain-code.mjs",
+    "package:source": "powershell -ExecutionPolicy Bypass -File package-portable.ps1",
+    "package:portable": "powershell -ExecutionPolicy Bypass -File package-portable.ps1",
+    "package:release": "powershell -ExecutionPolicy Bypass -File package-release.ps1",
+    "shortcut": "powershell -ExecutionPolicy Bypass -File install-desktop-shortcut.ps1"
+  },
+  "engines": {
+    "node": ">=18"
+  },
+  "devDependencies": {
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  },
+  "build": {
+    "appId": "app.seethrough.skill",
+    "productName": "SeeThrough Skill",
+    "asar": true,
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "index.html",
+      "styles.css",
+      "app.js",
+      "scan-local.mjs",
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "portable"
+      ],
+      "artifactName": "seethrough-skill-${version}-${arch}.${ext}"
+    }
+  }
+}

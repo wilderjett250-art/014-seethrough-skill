@@ -1,0 +1,15 @@
+skills-data.js
+skill-snapshot.json
+node_modules/
+release/
+dist/
+output/
+skill-quarantine-*/
+skill-cleanup-proposal.*
+audit-skills.mjs
+*.zip
+.env
+.env.*
+*.log
+*.tmp
+*.bak
